@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { Item } from '../types';
-import { X, Plus, Trash2 } from 'lucide-vue-next';
+import { X, Plus } from 'lucide-vue-next';
 import { MASTERIES } from '../data/masteries';
 
 const emit = defineEmits<{
@@ -16,7 +16,6 @@ const newItem = ref<Partial<Item>>({
   properties: []
 });
 
-const propertyInput = ref('');
 const selectedProperty = ref('');
 const rangeNormal = ref('');
 const rangeLong = ref('');
