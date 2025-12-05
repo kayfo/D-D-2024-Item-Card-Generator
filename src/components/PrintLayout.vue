@@ -5,6 +5,7 @@ import ItemCard from './ItemCard.vue';
 defineProps<{
   items: Item[];
   settings: PrintSettings;
+  editable?: boolean;
 }>();
 </script>
 
@@ -13,14 +14,14 @@ defineProps<{
     <!-- Grid Layout -->
     <div v-if="settings.layout === 'grid'" class="grid-container p-4 print:p-0">
       <div v-for="(item, index) in items" :key="index" class="print-item-wrapper border border-dashed border-gray-300 print:border-none">
-        <ItemCard :item="item" />
+        <ItemCard :item="item" :editable="editable" />
       </div>
     </div>
 
     <!-- Single Layout -->
     <div v-else class="single-container flex flex-col items-center gap-8 p-8 print:block print:p-0">
       <div v-for="(item, index) in items" :key="index" class="page-break-wrapper flex items-center justify-center print:h-screen print:w-screen">
-        <ItemCard :item="item" />
+        <ItemCard :item="item" :editable="editable" />
       </div>
     </div>
   </div>

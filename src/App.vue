@@ -98,7 +98,8 @@ const importCustomItems = (event: Event) => {
 const toggleItem = (item: Item) => {
   const index = selectedItems.value.findIndex(i => i.id === item.id);
   if (index === -1) {
-    selectedItems.value.push(item);
+    // Clone the item so edits don't affect the library or other copies
+    selectedItems.value.push(JSON.parse(JSON.stringify(item)));
   } else {
     selectedItems.value.splice(index, 1);
   }
@@ -110,7 +111,8 @@ const removeItem = (index: number) => {
 
 const duplicateItem = (index: number) => {
   const item = selectedItems.value[index];
-  selectedItems.value.splice(index + 1, 0, item);
+  // Clone the item
+  selectedItems.value.splice(index + 1, 0, JSON.parse(JSON.stringify(item)));
 };
 
 const startPrint = () => {
@@ -241,7 +243,7 @@ const exitPrintMode = () => {
             <div v-for="(item, index) in selectedItems" :key="index" class="relative group">
               <div class="transform scale-90 origin-top-left">
                  <!-- Preview uses the actual print component but scaled down -->
-                 <PrintLayout :items="[item]" :settings="{ layout: 'single', paperSize: 'letter' }" class="!min-h-0 !bg-transparent !p-0" />
+                 <PrintLayout :items="[item]" :settings="{ layout: 'single', paperSize: 'letter' }" :editable="true" class="!min-h-0 !bg-transparent !p-0" />
               </div>
               <div class="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button 

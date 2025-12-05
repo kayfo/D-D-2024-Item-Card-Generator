@@ -5,6 +5,7 @@ import { Sword, Sparkles, Scale, Coins } from 'lucide-vue-next';
 
 const props = defineProps<{
   item: Item;
+  editable?: boolean;
 }>();
 
 const headerColor = computed(() => {
@@ -62,13 +63,29 @@ const descriptionClass = computed(() => {
   if (len > 300) return 'text-[9px] leading-tight';
   return 'text-[10px] leading-snug';
 });
+
+const onNameBlur = (e: Event) => {
+  if (!props.editable) return;
+  const target = e.target as HTMLElement;
+  props.item.name = target.innerText;
+};
+
+const onDescBlur = (e: Event) => {
+  if (!props.editable) return;
+  const target = e.target as HTMLElement;
+  props.item.description = target.innerText;
+};
 </script>
 
 <template>
   <div class="item-card border-2 border-card-border bg-card-bg flex flex-col overflow-hidden relative shadow-md print:shadow-none">
     <!-- Header -->
     <div :class="[headerColor, 'text-white p-2 flex items-center justify-between h-10']">
-      <h3 class="font-serif font-bold text-sm leading-tight truncate flex-1">{{ item.name }}</h3>
+      <h3 
+        class="font-serif font-bold text-sm leading-tight truncate flex-1 outline-none focus:underline decoration-white/50"
+        :contenteditable="editable"
+        @blur="onNameBlur"
+      >{{ item.name }}</h3>
       <component :is="icon" class="w-4 h-4 ml-1 flex-shrink-0" />
     </div>
 
@@ -114,7 +131,11 @@ const descriptionClass = computed(() => {
 
       <!-- Description -->
       <div class="flex-1 overflow-hidden">
-        <p class="whitespace-pre-wrap">{{ cleanedDescription }}</p>
+        <p 
+          class="whitespace-pre-wrap outline-none focus:bg-yellow-50/50"
+          :contenteditable="editable"
+          @blur="onDescBlur"
+        >{{ cleanedDescription }}</p>
       </div>
       
       <!-- Footer -->
