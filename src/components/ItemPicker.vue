@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { Item } from '../types';
 import { Search, Plus, Check, Trash2 } from 'lucide-vue-next';
 import MultiSelect from './MultiSelect.vue';
+import ItemCard from './ItemCard.vue';
 
 const props = defineProps<{
   items: Item[];
@@ -18,6 +19,26 @@ const searchQuery = ref('');
 const filterType = ref<string[]>([]);
 const filterRarity = ref<string[]>([]);
 const filterSource = ref<string[]>([]);
+
+const hoveredItem = ref<Item | null>(null);
+const tooltipPos = ref({ x: 0, y: 0 });
+
+const handleMouseMove = (e: MouseEvent) => {
+  if (!hoveredItem.value) return;
+  
+  // Position tooltip to the right of the cursor
+  const x = e.clientX + 20;
+  const y = e.clientY + 20;
+  
+  // Check if it goes off screen (simple check)
+  const maxX = window.innerWidth - 260; // ~2.5in + padding
+  const maxY = window.innerHeight - 320; // ~3in + padding
+  
+  tooltipPos.value = {
+    x: Math.min(x, maxX),
+    y: Math.min(y, maxY)
+  };
+};
 
 const uniqueRarities = computed(() => {
   const rarities = new Set(props.items.map(i => i.rarity).filter(Boolean));
@@ -106,12 +127,13 @@ const isSelected = (item: Item) => {
     </div>
 
     <!-- List -->
-    <div class="flex-1 overflow-y-auto space-y-2 pr-1">
+    <div class="flex-1 overflow-y-auto space-y-2 pr-1" @mousemove="handleMouseMove" @mouseleave="hoveredItem = null">
       <div 
         v-for="item in filteredItems" 
         :key="item.id"
         class="flex items-center justify-between p-2 rounded border hover:bg-gray-50 transition-colors group"
         :class="{'border-blue-500 bg-blue-50': isSelected(item)}"
+        @mouseenter="hoveredItem = item"
       >
         <div class="flex-1 cursor-pointer" @click="emit('toggle-item', item)">
           <div class="font-bold text-sm flex items-center gap-2">
@@ -145,6 +167,15 @@ const isSelected = (item: Item) => {
       <div v-if="filteredItems.length === 0" class="text-center text-gray-500 py-4">
         No items found.
       </div>
+    </div>
+
+    <!-- Hover Preview Tooltip -->
+    <div 
+      v-if="hoveredItem"
+      class="fixed z-50 pointer-events-none shadow-2xl rounded-lg overflow-hidden"
+      :style="{ left: `${tooltipPos.x}px`, top: `${tooltipPos.y}px` }"
+    >
+      <ItemCard :item="hoveredItem" />
     </div>
   </div>
 </template>

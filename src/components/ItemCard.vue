@@ -14,6 +14,14 @@ const headerColor = computed(() => {
 const icon = computed(() => {
   return props.item.type === 'Magic Item' ? Sparkles : Sword;
 });
+
+const cleanedDescription = computed(() => {
+  // Remove markdown underscores and other common artifacts
+  return props.item.description
+    .replace(/_+/g, '') // Remove underscores
+    .replace(/\*\*/g, '') // Remove bold markers
+    .replace(/\*/g, ''); // Remove italic markers
+});
 </script>
 
 <template>
@@ -25,9 +33,14 @@ const icon = computed(() => {
     </div>
 
     <!-- Subheader -->
-    <div class="bg-gray-200 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-b border-card-border flex justify-between items-center">
-      <span>{{ item.type }}</span>
-      <span v-if="item.rarity">{{ item.rarity }}</span>
+    <div class="bg-gray-200 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-b border-card-border flex flex-col gap-0.5">
+      <div class="flex justify-between items-center w-full">
+        <span>{{ item.type }}</span>
+        <span v-if="item.rarity">{{ item.rarity }}</span>
+      </div>
+      <div v-if="item.attunement" class="text-[9px] normal-case italic text-gray-600">
+        Requires Attunement
+      </div>
     </div>
 
     <!-- Content -->
@@ -61,7 +74,7 @@ const icon = computed(() => {
 
       <!-- Description -->
       <div class="flex-1 overflow-hidden">
-        <p class="whitespace-pre-wrap">{{ item.description }}</p>
+        <p class="whitespace-pre-wrap">{{ cleanedDescription }}</p>
       </div>
       
       <!-- Footer -->
