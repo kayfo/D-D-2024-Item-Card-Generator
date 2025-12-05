@@ -5,7 +5,7 @@ import { fetchAllItems } from './services/api';
 import ItemPicker from './components/ItemPicker.vue';
 import PrintLayout from './components/PrintLayout.vue';
 import CustomItemModal from './components/CustomItemModal.vue';
-import { Printer, LayoutGrid, FileText, X, Loader2, Plus, Download, Upload, AlertTriangle, Copy } from 'lucide-vue-next';
+import { Printer, LayoutGrid, FileText, X, Loader2, Plus, Download, Upload, AlertTriangle, Copy, RefreshCw } from 'lucide-vue-next';
 
 const allItems = ref<Item[]>([]);
 const customItems = ref<Item[]>([]);
@@ -22,6 +22,28 @@ const combinedItems = computed(() => {
   return [...customItems.value, ...allItems.value];
 });
 
+const fetchAndCacheItems = async (force = false) => {
+  isLoading.value = true;
+  try {
+    // Check cache first
+    const cachedItems = localStorage.getItem('dnd-card-gen-api-items');
+    if (!force && cachedItems) {
+      allItems.value = JSON.parse(cachedItems);
+      isLoading.value = false;
+      return;
+    }
+
+    // Fetch from API
+    const apiItems = await fetchAllItems();
+    allItems.value = apiItems;
+    localStorage.setItem('dnd-card-gen-api-items', JSON.stringify(apiItems));
+  } catch (e) {
+    console.error("Failed to load items", e);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 onMounted(async () => {
   // Load custom items from local storage
   const savedCustomItems = localStorage.getItem('dnd-card-gen-custom-items');
@@ -33,14 +55,7 @@ onMounted(async () => {
     }
   }
 
-  try {
-    const apiItems = await fetchAllItems();
-    allItems.value = apiItems;
-  } catch (e) {
-    console.error("Failed to load items", e);
-  } finally {
-    isLoading.value = false;
-  }
+  await fetchAndCacheItems();
 });
 
 const saveCustomItem = (item: Item) => {
@@ -187,6 +202,15 @@ const exitPrintMode = () => {
               <AlertTriangle class="w-3 h-3 flex-shrink-0 mt-0.5" />
               <span>Custom items are stored in your browser. Export them to save a backup.</span>
             </div>
+
+            <button 
+              @click="fetchAndCacheItems(true)"
+              class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-2 px-4 rounded flex items-center justify-center gap-2 transition-colors text-sm border border-blue-200"
+              :disabled="isLoading"
+            >
+              <RefreshCw class="w-4 h-4" :class="{'animate-spin': isLoading}" /> 
+              {{ isLoading ? 'Refreshing...' : 'Refresh Library from API' }}
+            </button>
           </div>
 
           <div v-if="isLoading" class="flex-1 flex items-center justify-center bg-white rounded-lg shadow">
