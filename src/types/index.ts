@@ -2,6 +2,7 @@ export interface Item {
   id: string;
   name: string;
   type: 'Equipment' | 'Magic Item';
+  originalType?: string;
   rarity?: string;
   description: string;
   properties?: string[];

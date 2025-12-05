@@ -65,6 +65,7 @@ async function fetchMagicItems(): Promise<Item[]> {
       id: m.slug,
       name: m.name,
       type: 'Magic Item',
+      originalType: m.type,
       rarity: m.rarity,
       description: m.desc,
       attunement: !!m.requires_attunement,

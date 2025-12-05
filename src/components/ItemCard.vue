@@ -75,7 +75,7 @@ const descriptionClass = computed(() => {
     <!-- Subheader -->
     <div class="bg-gray-200 px-2 py-1 text-[10px] font-bold uppercase tracking-wider border-b border-card-border flex flex-col gap-0.5">
       <div class="flex justify-between items-center w-full">
-        <span>{{ item.type === 'Wondrous Item' ? 'Wondrous' : item.type }}</span>
+        <span>{{ (item.originalType === 'Wondrous Item' ? 'Wondrous' : item.originalType) || item.type }}</span>
         <span v-if="item.rarity">{{ item.rarity }}</span>
       </div>
       <div v-if="item.attunement" class="text-[9px] normal-case italic text-gray-600">
