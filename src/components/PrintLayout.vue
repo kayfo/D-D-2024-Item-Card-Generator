@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div class="print-layout w-full bg-white min-h-screen">
     <!-- Grid Layout -->
-    <div v-if="settings.layout === 'grid'" class="grid-container p-4">
+    <div v-if="settings.layout === 'grid'" class="grid-container p-4 print:p-0">
       <div v-for="(item, index) in items" :key="index" class="print-item-wrapper border border-dashed border-gray-300 print:border-none">
         <ItemCard :item="item" />
       </div>
@@ -29,9 +29,10 @@ defineProps<{
 <style scoped>
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, max-content);
+  grid-template-columns: repeat(3, 2.5in);
   justify-content: center;
-  gap: 4px;
+  gap: 0;
+  width: 100%;
 }
 
 .print-item-wrapper {

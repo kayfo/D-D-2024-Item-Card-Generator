@@ -5,7 +5,7 @@ import { fetchAllItems } from './services/api';
 import ItemPicker from './components/ItemPicker.vue';
 import PrintLayout from './components/PrintLayout.vue';
 import CustomItemModal from './components/CustomItemModal.vue';
-import { Printer, LayoutGrid, FileText, X, Loader2, Plus, Download, Upload, AlertTriangle } from 'lucide-vue-next';
+import { Printer, LayoutGrid, FileText, X, Loader2, Plus, Download, Upload, AlertTriangle, Copy } from 'lucide-vue-next';
 
 const allItems = ref<Item[]>([]);
 const customItems = ref<Item[]>([]);
@@ -108,6 +108,11 @@ const removeItem = (index: number) => {
   selectedItems.value.splice(index, 1);
 };
 
+const duplicateItem = (index: number) => {
+  const item = selectedItems.value[index];
+  selectedItems.value.splice(index + 1, 0, item);
+};
+
 const startPrint = () => {
   isPrintMode.value = true;
   setTimeout(() => {
@@ -146,7 +151,7 @@ const exitPrintMode = () => {
     </header>
 
     <!-- Main Content -->
-    <main class="flex-1 flex overflow-hidden relative">
+    <main class="flex-1 flex overflow-hidden relative print:block print:overflow-visible print:h-auto">
       
       <!-- Editor View -->
       <div v-if="!isPrintMode" class="flex w-full h-full p-4 gap-4 no-print">
@@ -238,12 +243,22 @@ const exitPrintMode = () => {
                  <!-- Preview uses the actual print component but scaled down -->
                  <PrintLayout :items="[item]" :settings="{ layout: 'single', paperSize: 'letter' }" class="!min-h-0 !bg-transparent !p-0" />
               </div>
-              <button 
-                @click="removeItem(index)"
-                class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X class="w-4 h-4" />
-              </button>
+              <div class="absolute -top-2 -right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button 
+                  @click="duplicateItem(index)"
+                  class="bg-blue-500 text-white rounded-full p-1 shadow hover:bg-blue-600"
+                  title="Duplicate"
+                >
+                  <Copy class="w-4 h-4" />
+                </button>
+                <button 
+                  @click="removeItem(index)"
+                  class="bg-red-500 text-white rounded-full p-1 shadow hover:bg-red-600"
+                  title="Remove"
+                >
+                  <X class="w-4 h-4" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
