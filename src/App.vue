@@ -250,7 +250,7 @@ const exitPrintMode = () => {
       </div>
 
       <!-- Print View (Overlay) -->
-      <div v-if="isPrintMode" class="absolute inset-0 bg-white z-50 overflow-auto">
+      <div v-if="isPrintMode" class="absolute inset-0 bg-white z-50 overflow-auto print:overflow-visible print:static print:h-auto">
         <PrintLayout :items="selectedItems" :settings="printSettings" />
       </div>
 
