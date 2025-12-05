@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div class="print-layout w-full bg-white min-h-screen">
     <!-- Grid Layout -->
-    <div v-if="settings.layout === 'grid'" class="grid-container p-4 flex flex-wrap content-start gap-0">
+    <div v-if="settings.layout === 'grid'" class="grid-container p-4">
       <div v-for="(item, index) in items" :key="index" class="print-item-wrapper border border-dashed border-gray-300 print:border-none">
         <ItemCard :item="item" />
       </div>
@@ -28,15 +28,14 @@ defineProps<{
 
 <style scoped>
 .grid-container {
-  /* 3x3 grid on standard paper roughly */
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, max-content);
   justify-content: center;
+  gap: 4px;
 }
 
 .print-item-wrapper {
   /* Add cut lines or spacing if needed */
-  margin: 1px; 
   break-inside: avoid;
   page-break-inside: avoid;
 }
