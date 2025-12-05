@@ -37,6 +37,8 @@ defineProps<{
 .print-item-wrapper {
   /* Add cut lines or spacing if needed */
   margin: 1px; 
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 @media print {
